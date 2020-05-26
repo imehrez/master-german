@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: master-german-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: master-german-front
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: master-german-front
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: master-german-front
+        image: mycrdevops.azurecr.io/master-german-front:v1
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        env:
+        - name: REDIS
+          value: "master-german-back"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: master-german-front
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: master-german-front

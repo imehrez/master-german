@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: master-german-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: master-german-back
+  template:
+    metadata:
+      labels:
+        app: master-german-back
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: master-german-back
+        image: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: master-german-back
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: master-german-back

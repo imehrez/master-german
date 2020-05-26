@@ -1,0 +1,16 @@
+version: '3'
+services:
+  master-german-back:
+    image: redis
+    container_name: master-german-back
+    ports:
+        - "6379:6379"
+
+  master-german-front:
+    build: ./master-german
+    image: master-german-front
+    container_name: master-german-front
+    environment:
+      REDIS: master-german-back
+    ports:
+        - "8080:80"
